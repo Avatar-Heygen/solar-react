@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server';
+import Link from 'next/link';
 
 export default async function DashboardPage() {
     const supabase = createClient();
@@ -49,6 +50,7 @@ export default async function DashboardPage() {
                                     <th className="h-12 px-4 text-left align-middle font-medium text-slate-500">Téléphone</th>
                                     <th className="h-12 px-4 text-left align-middle font-medium text-slate-500">Statut</th>
                                     <th className="h-12 px-4 text-left align-middle font-medium text-slate-500">Date</th>
+                                    <th className="h-12 px-4 text-left align-middle font-medium text-slate-500">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="[&_tr:last-child]:border-0">
@@ -68,11 +70,19 @@ export default async function DashboardPage() {
                                             <td className="p-4 align-middle">
                                                 {new Date(lead.created_at).toLocaleDateString('fr-FR')}
                                             </td>
+                                            <td className="p-4 align-middle">
+                                                <Link
+                                                    href={`/dashboard/chat/${lead.id}`}
+                                                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-900 text-slate-50 hover:bg-slate-900/90 h-9 px-3"
+                                                >
+                                                    Chat
+                                                </Link>
+                                            </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={4} className="p-4 text-center text-slate-500">
+                                        <td colSpan={5} className="p-4 text-center text-slate-500">
                                             Aucun lead pour le moment
                                         </td>
                                     </tr>

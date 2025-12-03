@@ -51,44 +51,47 @@ export async function POST(request: Request) {
 
         history.push({ role: 'user', content: body });
 
-        // 4. Generate response with OpenAI
-        const messages = [
-            {
-                role: 'system',
-                content: `Tu es Sarah, assistante chez SolarFlash. Tu discutes par SMS avec un potentiel client (${lead.name}). Ton but est de qualifier le lead (propriétaire ? type de toit ? facture électricité ?). Sois brève, empathique et naturelle. Ne pose qu'une seule question à la fois.`,
-            },
-            ...history.map((msg: any) => ({
-                role: msg.role === 'user' ? 'user' : 'assistant',
-                content: msg.content
-            }))
-        ];
+        // 4. Generate response with OpenAI (ONLY IF AI IS NOT PAUSED)
+        let aiResponse = null;
 
-        const completion = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
-            messages: messages as any,
-        });
+        if (!lead.ai_paused) {
+            const messages = [
+                {
+                    role: 'system',
+                    content: `Tu es Sarah, assistante chez SolarFlash. Tu discutes par SMS avec un potentiel client (${lead.name}). Ton but est de qualifier le lead (propriétaire ? type de toit ? facture électricité ?). Sois brève, empathique et naturelle. Ne pose qu'une seule question à la fois.`,
+                },
+                ...history.map((msg: any) => ({
+                    role: msg.role === 'user' ? 'user' : 'assistant',
+                    content: msg.content
+                }))
+            ];
 
-        const aiResponse = completion.choices[0].message.content;
+            const completion = await openai.chat.completions.create({
+                model: 'gpt-4o-mini',
+                messages: messages as any,
+            });
 
-        if (!aiResponse) {
-            throw new Error('Failed to generate response from OpenAI');
+            aiResponse = completion.choices[0].message.content;
+
+            if (aiResponse) {
+                // 5. Send SMS with Twilio
+                await client.messages.create({
+                    body: aiResponse,
+                    from: twilioNumber,
+                    to: from,
+                });
+
+                history.push({ role: 'assistant', content: aiResponse });
+            }
+        } else {
+            console.log('AI is paused for this lead. Skipping auto-response.');
         }
-
-        // 5. Send SMS with Twilio
-        await client.messages.create({
-            body: aiResponse,
-            from: twilioNumber,
-            to: from,
-        });
-
-        // 6. Update conversation history with AI response and update status
-        history.push({ role: 'assistant', content: aiResponse });
 
         const { error: updateError } = await (supabase as any)
             .from('leads')
             .update({
                 conversation_history: history,
-                status: 'En Discussion'
+                status: lead.status === 'Nouveau' ? 'En Discussion' : lead.status
             })
             .eq('id', lead.id);
 
