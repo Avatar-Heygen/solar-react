@@ -22,10 +22,10 @@ export default function SettingsPage() {
 
             if (user) {
                 const { data, error } = await supabase
-                    .from('profiles')
+                    .from('profiles' as any)
                     .select('*')
                     .eq('id', user.id)
-                    .single()
+                    .single() as any
 
                 if (data) {
                     setFormData({
@@ -56,7 +56,7 @@ export default function SettingsPage() {
         const { data: { user } } = await supabase.auth.getUser()
 
         if (user) {
-            const { error } = await supabase
+            const { error } = await (supabase as any)
                 .from('profiles')
                 .update({
                     company_name: formData.company_name,

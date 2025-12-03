@@ -24,25 +24,25 @@ export async function POST(req: Request) {
 
         // 2. Fetch Company Name from Profiles (take the first one found for MVP)
         const { data: profile } = await supabase
-            .from('profiles')
+            .from('profiles' as any)
             .select('company_name')
             .limit(1)
-            .single();
+            .single() as any;
 
         const companyName = profile?.company_name || 'SolarFlash';
 
         // 3. Check if lead exists
         const { data: existingLead } = await supabase
-            .from('leads')
+            .from('leads' as any)
             .select('*')
             .eq('phone', from)
-            .single();
+            .single() as any;
 
         let leadId = existingLead?.id;
 
         // 4. Create or Update Lead
         if (!existingLead) {
-            const { data: newLead, error: createError } = await supabase
+            const { data: newLead, error: createError } = await (supabase as any)
                 .from('leads')
                 .insert([
                     {
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
                     }
                 ])
                 .select()
-                .single();
+                .single() as any;
 
             if (newLead) leadId = newLead.id;
         } else {
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
                 }
             ];
 
-            await supabase
+            await (supabase as any)
                 .from('leads')
                 .update({ conversation_history: newHistory })
                 .eq('id', leadId);
@@ -89,10 +89,10 @@ export async function POST(req: Request) {
         // Update history with the sent SMS
         if (leadId) {
             const { data: lead } = await supabase
-                .from('leads')
+                .from('leads' as any)
                 .select('conversation_history')
                 .eq('id', leadId)
-                .single();
+                .single() as any;
 
             if (lead) {
                 const updatedHistory = [
@@ -100,7 +100,7 @@ export async function POST(req: Request) {
                     { role: 'assistant', content: smsBody }
                 ];
 
-                await supabase
+                await (supabase as any)
                     .from('leads')
                     .update({ conversation_history: updatedHistory, status: 'SMS Envoyé' })
                     .eq('id', leadId);

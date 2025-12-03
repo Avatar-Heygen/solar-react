@@ -39,7 +39,7 @@ export async function sendManualMessage(leadId: string, message: string) {
             { role: 'assistant', content: message, type: 'manual' }
         ]
 
-        const { error: updateError } = await supabase
+        const { error: updateError } = await (supabase as any)
             .from('leads' as any)
             .update({
                 conversation_history: newHistory,
