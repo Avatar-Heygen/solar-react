@@ -100,7 +100,7 @@ export default function SettingsPage() {
                         value={formData.company_name}
                         onChange={handleChange}
                         placeholder="Ex: SolarTech"
-                        className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
 
@@ -113,7 +113,7 @@ export default function SettingsPage() {
                         value={formData.ai_name}
                         onChange={handleChange}
                         placeholder="Ex: Sarah"
-                        className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
 
@@ -126,7 +126,7 @@ export default function SettingsPage() {
                         value={formData.calendly_url}
                         onChange={handleChange}
                         placeholder="https://calendly.com/..."
-                        className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
 
@@ -140,7 +140,7 @@ export default function SettingsPage() {
                         onChange={handleChange}
                         placeholder="Personnalisez le comportement de l'IA..."
                         rows={4}
-                        className="flex w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
 
@@ -160,6 +160,38 @@ export default function SettingsPage() {
                     )}
                 </div>
 
+            </div>
+
+            {/* Integration Section */}
+            <div className="space-y-6 rounded-xl border border-slate-800 bg-slate-950 p-6 text-slate-200">
+                <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-white">Intégration</h3>
+                </div>
+
+                <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        Webhook URL (pour vos campagnes Facebook/Google Ads)
+                    </label>
+                    <div className="flex items-center gap-2">
+                        <code className="flex-1 rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-zinc-400 font-mono">
+                            {typeof window !== 'undefined' ? `${window.location.origin}/api/incoming-lead` : '/api/incoming-lead'}
+                        </code>
+                        <button
+                            onClick={() => {
+                                const url = `${window.location.origin}/api/incoming-lead`;
+                                navigator.clipboard.writeText(url);
+                                setMessage("✅ URL copiée !");
+                                setTimeout(() => setMessage(""), 3000);
+                            }}
+                            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-800 text-white hover:bg-slate-700 h-10 px-4 py-2"
+                        >
+                            Copier
+                        </button>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                        Configurez votre source de leads (ex: Zapier, Make) pour envoyer une requête POST à cette URL avec les champs <code>name</code> et <code>phone</code>.
+                    </p>
+                </div>
             </div>
         </div>
     )

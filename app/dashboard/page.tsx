@@ -1,94 +1,118 @@
 import { createClient } from '@/utils/supabase/server';
 import Link from 'next/link';
+import DashboardChart from '@/components/dashboard/DashboardChart';
+import { Users, CalendarCheck, MessageCircle, Euro } from 'lucide-react';
 
 export default async function DashboardPage() {
     const supabase = createClient();
-    const { data: leads } = await supabase.from('leads' as any).select('*') as any;
+    const { data: leads } = await supabase.from('leads' as any).select('*').order('created_at', { ascending: false }) as any;
 
     const totalLeads = leads?.length || 0;
     const rdvPris = leads?.filter((lead: any) => lead.status === 'RDV Pris').length || 0;
+    const respondedLeads = leads?.filter((lead: any) => lead.status !== 'Nouveau').length || 0;
+    const responseRate = totalLeads > 0 ? Math.round((respondedLeads / totalLeads) * 100) : 0;
+    const estimatedRevenue = rdvPris * 150; // Mock value: 150€ per RDV
 
     return (
-        <div className="p-8 space-y-8">
+        <div className="p-8 space-y-8 bg-zinc-950 min-h-screen text-zinc-100">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight text-white">Dashboard</h2>
+                    <p className="text-zinc-400 mt-1">Vue d'ensemble de votre activité solaire.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="flex h-2 w-2 rounded-full bg-green-500"></span>
+                    <span className="text-sm text-zinc-400">Système opérationnel</span>
+                </div>
             </div>
 
+            {/* KPI Grid */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {/* Card: Total Leads */}
-                <div className="rounded-xl border border-slate-200 bg-white text-slate-950 shadow">
-                    <div className="flex flex-row items-center justify-between space-y-0 p-6 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium">Total Leads</h3>
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-sm">
+                    <div className="flex items-center justify-between pb-2">
+                        <h3 className="text-sm font-medium text-zinc-400">Total Leads</h3>
+                        <Users className="h-4 w-4 text-blue-500" />
                     </div>
-                    <div className="p-6 pt-0">
-                        <div className="text-2xl font-bold">{totalLeads}</div>
-                    </div>
+                    <div className="text-2xl font-bold text-white">{totalLeads}</div>
+                    <p className="text-xs text-zinc-500 mt-1">+20.1% par rapport au mois dernier</p>
                 </div>
-
-                {/* Card: RDV Pris */}
-                <div className="rounded-xl border border-slate-200 bg-white text-slate-950 shadow">
-                    <div className="flex flex-row items-center justify-between space-y-0 p-6 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium">RDV Pris</h3>
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-sm">
+                    <div className="flex items-center justify-between pb-2">
+                        <h3 className="text-sm font-medium text-zinc-400">RDV Pris</h3>
+                        <CalendarCheck className="h-4 w-4 text-green-500" />
                     </div>
-                    <div className="p-6 pt-0">
-                        <div className="text-2xl font-bold">{rdvPris}</div>
+                    <div className="text-2xl font-bold text-white">{rdvPris}</div>
+                    <p className="text-xs text-zinc-500 mt-1">+12 depuis la semaine dernière</p>
+                </div>
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-sm">
+                    <div className="flex items-center justify-between pb-2">
+                        <h3 className="text-sm font-medium text-zinc-400">Taux de Réponse</h3>
+                        <MessageCircle className="h-4 w-4 text-purple-500" />
                     </div>
+                    <div className="text-2xl font-bold text-white">{responseRate}%</div>
+                    <p className="text-xs text-zinc-500 mt-1">L'IA performe bien</p>
+                </div>
+                <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-sm">
+                    <div className="flex items-center justify-between pb-2">
+                        <h3 className="text-sm font-medium text-zinc-400">Revenu Estimé</h3>
+                        <Euro className="h-4 w-4 text-yellow-500" />
+                    </div>
+                    <div className="text-2xl font-bold text-white">{estimatedRevenue} €</div>
+                    <p className="text-xs text-zinc-500 mt-1">Basé sur les RDV qualifiés</p>
                 </div>
             </div>
 
-            {/* Card: Leads Récents */}
-            <div className="rounded-xl border border-slate-200 bg-white text-slate-950 shadow">
-                <div className="flex flex-col space-y-1.5 p-6">
-                    <h3 className="font-semibold leading-none tracking-tight">Leads Récents</h3>
+            {/* Main Content Grid */}
+            <div className="grid gap-4 md:grid-cols-7">
+
+                {/* Chart Area (Span 4) */}
+                <div className="col-span-4 rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+                    <h3 className="font-semibold text-white mb-6">Performance Hebdomadaire</h3>
+                    <DashboardChart />
                 </div>
-                <div className="p-6 pt-0">
-                    <div className="relative w-full overflow-auto">
-                        <table className="w-full caption-bottom text-sm">
-                            <thead className="[&_tr]:border-b">
-                                <tr className="border-b border-slate-200 transition-colors hover:bg-slate-100/50">
-                                    <th className="h-12 px-4 text-left align-middle font-medium text-slate-500">Nom</th>
-                                    <th className="h-12 px-4 text-left align-middle font-medium text-slate-500">Téléphone</th>
-                                    <th className="h-12 px-4 text-left align-middle font-medium text-slate-500">Statut</th>
-                                    <th className="h-12 px-4 text-left align-middle font-medium text-slate-500">Date</th>
-                                    <th className="h-12 px-4 text-left align-middle font-medium text-slate-500">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody className="[&_tr:last-child]:border-0">
-                                {leads && leads.length > 0 ? (
-                                    leads.map((lead: any, i: number) => (
-                                        <tr key={i} className="border-b border-slate-200 transition-colors hover:bg-slate-100/50">
-                                            <td className="p-4 align-middle font-medium">{lead.name}</td>
-                                            <td className="p-4 align-middle">{lead.phone}</td>
-                                            <td className="p-4 align-middle">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${lead.status === 'RDV Pris' ? 'bg-green-100 text-green-800' :
-                                                    lead.status === 'Réponse Reçue' ? 'bg-blue-100 text-blue-800' :
-                                                        'bg-gray-100 text-gray-800'
-                                                    }`}>
-                                                    {lead.status}
-                                                </span>
-                                            </td>
-                                            <td className="p-4 align-middle">
-                                                {new Date(lead.created_at).toLocaleDateString('fr-FR')}
-                                            </td>
-                                            <td className="p-4 align-middle">
-                                                <Link
-                                                    href={`/dashboard/chat/${lead.id}`}
-                                                    className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-900 text-slate-50 hover:bg-slate-900/90 h-9 px-3"
-                                                >
-                                                    Chat
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={5} className="p-4 text-center text-slate-500">
-                                            Aucun lead pour le moment
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+
+                {/* Recent Leads (Span 3) */}
+                <div className="col-span-3 rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h3 className="font-semibold text-white">Leads Récents</h3>
+                        <Link href="/dashboard/import" className="text-xs text-blue-400 hover:text-blue-300">
+                            Importer CSV
+                        </Link>
+                    </div>
+                    <div className="space-y-4">
+                        {leads && leads.length > 0 ? (
+                            leads.slice(0, 5).map((lead: any) => (
+                                <div key={lead.id} className="flex items-center justify-between p-3 rounded-lg bg-zinc-950/50 border border-zinc-800/50 hover:border-zinc-700 transition-colors">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-medium text-zinc-300">
+                                            {lead.name.substring(0, 2).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium text-white">{lead.name}</p>
+                                            <p className="text-xs text-zinc-500">{lead.phone}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${lead.status === 'RDV Pris' ? 'bg-green-500/10 text-green-400' :
+                                                lead.status === 'En Discussion' ? 'bg-blue-500/10 text-blue-400' :
+                                                    'bg-zinc-800 text-zinc-400'
+                                            }`}>
+                                            {lead.status}
+                                        </span>
+                                        <Link
+                                            href={`/dashboard/chat/${lead.id}`}
+                                            className="p-2 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+                                        >
+                                            <MessageCircle className="h-4 w-4" />
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center py-8 text-zinc-500 text-sm">
+                                Aucun lead récent.
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

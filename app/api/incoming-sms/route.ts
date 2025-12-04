@@ -28,7 +28,17 @@ export async function POST(request: Request) {
 
         const supabase = createClient();
 
-        // 2. Find lead in Supabase
+        // 2. Fetch Company Name and Calendly URL from Profiles (take the first one found for MVP)
+        const { data: profile } = await supabase
+            .from('profiles' as any)
+            .select('company_name, calendly_url')
+            .limit(1)
+            .single() as any;
+
+        const companyName = profile?.company_name || 'SolarFlash';
+        const calendlyUrl = profile?.calendly_url || '';
+
+        // 3. Find lead in Supabase
         const { data: lead, error: fetchError } = await supabase
             .from('leads' as any)
             .select('*')
@@ -43,7 +53,7 @@ export async function POST(request: Request) {
             );
         }
 
-        // 3. Update conversation history with user message
+        // 4. Update conversation history with user message
         let history = lead.conversation_history || [];
         if (!Array.isArray(history)) {
             history = [];
@@ -51,14 +61,21 @@ export async function POST(request: Request) {
 
         history.push({ role: 'user', content: body });
 
-        // 4. Generate response with OpenAI (ONLY IF AI IS NOT PAUSED)
+        // 5. Generate response with OpenAI (ONLY IF AI IS NOT PAUSED)
         let aiResponse = null;
 
         if (!lead.ai_paused) {
+            const systemPrompt = `Tu es Sarah, assistante chez ${companyName}. Tu discutes par SMS avec un potentiel client (${lead.name}). 
+            Ton but est de qualifier le lead (propriétaire ? type de toit ? facture électricité ?). 
+            Sois brève, empathique et naturelle. Ne pose qu'une seule question à la fois.
+            
+            Ton but ultime est le RDV. Si le prospect semble qualifié (propriétaire) et intéressé, propose un RDV et envoie ce lien exact : ${calendlyUrl}. 
+            N'envoie le lien que si l'intérêt est confirmé.`;
+
             const messages = [
                 {
                     role: 'system',
-                    content: `Tu es Sarah, assistante chez SolarFlash. Tu discutes par SMS avec un potentiel client (${lead.name}). Ton but est de qualifier le lead (propriétaire ? type de toit ? facture électricité ?). Sois brève, empathique et naturelle. Ne pose qu'une seule question à la fois.`,
+                    content: systemPrompt,
                 },
                 ...history.map((msg: any) => ({
                     role: msg.role === 'user' ? 'user' : 'assistant',
