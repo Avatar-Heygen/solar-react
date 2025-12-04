@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import twilio from 'twilio';
 import OpenAI from 'openai';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -11,6 +11,11 @@ const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
+
+// Initialize Supabase Admin Client (to bypass RLS for webhooks)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function POST(request: Request) {
     try {
@@ -26,9 +31,8 @@ export async function POST(request: Request) {
             );
         }
 
-        const supabase = createClient();
-
         // 2. Fetch Company Name and Calendly URL from Profiles (take the first one found for MVP)
+        // Using admin client so no auth.getUser() needed
         const { data: profile } = await supabase
             .from('profiles' as any)
             .select('company_name, calendly_url')
@@ -62,48 +66,55 @@ export async function POST(request: Request) {
         history.push({ role: 'user', content: body });
 
         // 5. Generate response with OpenAI (ONLY IF AI IS NOT PAUSED)
+        // Wrapped in try/catch to ensure user message is saved even if AI fails
         let aiResponse = null;
 
         if (!lead.ai_paused) {
-            const systemPrompt = `Tu es Sarah, assistante chez ${companyName}. Tu discutes par SMS avec un potentiel client (${lead.name}). 
-            Ton but est de qualifier le lead (propriétaire ? type de toit ? facture électricité ?). 
-            Sois brève, empathique et naturelle. Ne pose qu'une seule question à la fois.
-            
-            Ton but ultime est le RDV. Si le prospect semble qualifié (propriétaire) et intéressé, propose un RDV et envoie ce lien exact : ${calendlyUrl}. 
-            N'envoie le lien que si l'intérêt est confirmé.`;
+            try {
+                const systemPrompt = `Tu es Sarah, assistante chez ${companyName}. Tu discutes par SMS avec un potentiel client (${lead.name}). 
+                Ton but est de qualifier le lead (propriétaire ? type de toit ? facture électricité ?). 
+                Sois brève, empathique et naturelle. Ne pose qu'une seule question à la fois.
+                
+                Ton but ultime est le RDV. Si le prospect semble qualifié (propriétaire) et intéressé, propose un RDV et envoie ce lien exact : ${calendlyUrl}. 
+                N'envoie le lien que si l'intérêt est confirmé.`;
 
-            const messages = [
-                {
-                    role: 'system',
-                    content: systemPrompt,
-                },
-                ...history.map((msg: any) => ({
-                    role: msg.role === 'user' ? 'user' : 'assistant',
-                    content: msg.content
-                }))
-            ];
+                const messages = [
+                    {
+                        role: 'system',
+                        content: systemPrompt,
+                    },
+                    ...history.map((msg: any) => ({
+                        role: msg.role === 'user' ? 'user' : 'assistant',
+                        content: msg.content
+                    }))
+                ];
 
-            const completion = await openai.chat.completions.create({
-                model: 'gpt-4o-mini',
-                messages: messages as any,
-            });
-
-            aiResponse = completion.choices[0].message.content;
-
-            if (aiResponse) {
-                // 5. Send SMS with Twilio
-                await client.messages.create({
-                    body: aiResponse,
-                    from: twilioNumber,
-                    to: from,
+                const completion = await openai.chat.completions.create({
+                    model: 'gpt-4o-mini',
+                    messages: messages as any,
                 });
 
-                history.push({ role: 'assistant', content: aiResponse });
+                aiResponse = completion.choices[0].message.content;
+
+                if (aiResponse) {
+                    // Send SMS with Twilio
+                    await client.messages.create({
+                        body: aiResponse,
+                        from: twilioNumber,
+                        to: from,
+                    });
+
+                    history.push({ role: 'assistant', content: aiResponse });
+                }
+            } catch (aiError) {
+                console.error('Error generating/sending AI response:', aiError);
+                // We don't throw here, so we can still save the user message
             }
         } else {
             console.log('AI is paused for this lead. Skipping auto-response.');
         }
 
+        // 6. Save conversation history (User message + potential AI response)
         const { error: updateError } = await (supabase as any)
             .from('leads')
             .update({

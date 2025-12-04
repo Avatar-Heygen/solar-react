@@ -11,8 +11,8 @@ export default function DashboardLayout({
             {/* Sidebar */}
             <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-zinc-800 bg-zinc-950">
                 <div className="flex h-16 items-center border-b border-zinc-800 px-6">
-                    <Link href="/" className="flex items-center gap-2 font-bold text-white">
-                        <Sun className="h-6 w-6 text-yellow-500" />
+                    <Link href="/" className="flex items-center gap-2 font-bold text-xl text-white">
+                        <Sun className="h-6 w-6 text-orange-500 fill-orange-500" />
                         <span>SolarFlash</span>
                     </Link>
                 </div>
@@ -20,7 +20,7 @@ export default function DashboardLayout({
                 <nav className="flex flex-col gap-1 p-4">
                     <Link
                         href="/dashboard"
-                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors"
+                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-zinc-900 hover:text-orange-500 transition-colors"
                     >
                         <LayoutDashboard className="h-5 w-5" />
                         Dashboard
@@ -28,7 +28,7 @@ export default function DashboardLayout({
 
                     <Link
                         href="/dashboard/import"
-                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors"
+                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-zinc-900 hover:text-orange-500 transition-colors"
                     >
                         <UploadCloud className="h-5 w-5" />
                         Import Leads
@@ -36,7 +36,7 @@ export default function DashboardLayout({
 
                     <Link
                         href="/dashboard/settings"
-                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors"
+                        className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-zinc-900 hover:text-orange-500 transition-colors"
                     >
                         <Settings className="h-5 w-5" />
                         Settings

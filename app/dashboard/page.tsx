@@ -31,7 +31,7 @@ export default async function DashboardPage() {
                 <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-sm">
                     <div className="flex items-center justify-between pb-2">
                         <h3 className="text-sm font-medium text-zinc-400">Total Leads</h3>
-                        <Users className="h-4 w-4 text-blue-500" />
+                        <Users className="h-4 w-4 text-orange-500" />
                     </div>
                     <div className="text-2xl font-bold text-white">{totalLeads}</div>
                     <p className="text-xs text-zinc-500 mt-1">+20.1% par rapport au mois dernier</p>
@@ -39,7 +39,7 @@ export default async function DashboardPage() {
                 <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-sm">
                     <div className="flex items-center justify-between pb-2">
                         <h3 className="text-sm font-medium text-zinc-400">RDV Pris</h3>
-                        <CalendarCheck className="h-4 w-4 text-green-500" />
+                        <CalendarCheck className="h-4 w-4 text-orange-500" />
                     </div>
                     <div className="text-2xl font-bold text-white">{rdvPris}</div>
                     <p className="text-xs text-zinc-500 mt-1">+12 depuis la semaine dernière</p>
@@ -47,7 +47,7 @@ export default async function DashboardPage() {
                 <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-sm">
                     <div className="flex items-center justify-between pb-2">
                         <h3 className="text-sm font-medium text-zinc-400">Taux de Réponse</h3>
-                        <MessageCircle className="h-4 w-4 text-purple-500" />
+                        <MessageCircle className="h-4 w-4 text-orange-500" />
                     </div>
                     <div className="text-2xl font-bold text-white">{responseRate}%</div>
                     <p className="text-xs text-zinc-500 mt-1">L'IA performe bien</p>
@@ -55,7 +55,7 @@ export default async function DashboardPage() {
                 <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 shadow-sm">
                     <div className="flex items-center justify-between pb-2">
                         <h3 className="text-sm font-medium text-zinc-400">Revenu Estimé</h3>
-                        <Euro className="h-4 w-4 text-yellow-500" />
+                        <Euro className="h-4 w-4 text-orange-500" />
                     </div>
                     <div className="text-2xl font-bold text-white">{estimatedRevenue} €</div>
                     <p className="text-xs text-zinc-500 mt-1">Basé sur les RDV qualifiés</p>
@@ -75,7 +75,7 @@ export default async function DashboardPage() {
                 <div className="col-span-3 rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="font-semibold text-white">Leads Récents</h3>
-                        <Link href="/dashboard/import" className="text-xs text-blue-400 hover:text-blue-300">
+                        <Link href="/dashboard/import" className="text-xs text-orange-400 hover:text-orange-300">
                             Importer CSV
                         </Link>
                     </div>
@@ -93,9 +93,9 @@ export default async function DashboardPage() {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${lead.status === 'RDV Pris' ? 'bg-green-500/10 text-green-400' :
-                                                lead.status === 'En Discussion' ? 'bg-blue-500/10 text-blue-400' :
-                                                    'bg-zinc-800 text-zinc-400'
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${lead.status === 'RDV Pris' ? 'bg-orange-500/10 text-orange-400' :
+                                            lead.status === 'En Discussion' ? 'bg-orange-500/10 text-orange-400' :
+                                                'bg-zinc-800 text-zinc-400'
                                             }`}>
                                             {lead.status}
                                         </span>

@@ -89,7 +89,7 @@ export default function SettingsPage() {
                 <h2 className="text-3xl font-bold tracking-tight text-white">Réglages</h2>
             </div>
 
-            <div className="space-y-6 rounded-xl border border-slate-800 bg-slate-950 p-6 text-slate-200">
+            <div className="space-y-6 rounded-xl border border-zinc-800 bg-zinc-950 p-6 text-zinc-200">
 
                 <div className="space-y-2">
                     <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -100,7 +100,7 @@ export default function SettingsPage() {
                         value={formData.company_name}
                         onChange={handleChange}
                         placeholder="Ex: SolarTech"
-                        className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-10 w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
 
@@ -113,7 +113,7 @@ export default function SettingsPage() {
                         value={formData.ai_name}
                         onChange={handleChange}
                         placeholder="Ex: Sarah"
-                        className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-10 w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
 
@@ -126,7 +126,7 @@ export default function SettingsPage() {
                         value={formData.calendly_url}
                         onChange={handleChange}
                         placeholder="https://calendly.com/..."
-                        className="flex h-10 w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex h-10 w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
 
@@ -140,7 +140,7 @@ export default function SettingsPage() {
                         onChange={handleChange}
                         placeholder="Personnalisez le comportement de l'IA..."
                         rows={4}
-                        className="flex w-full rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex w-full rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
 
@@ -148,7 +148,7 @@ export default function SettingsPage() {
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-white text-black hover:bg-slate-200 h-10 px-4 py-2"
+                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-600 text-white hover:bg-orange-700 h-10 px-4 py-2"
                     >
                         {saving ? "Sauvegarde..." : "Sauvegarder"}
                     </button>
@@ -163,7 +163,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Integration Section */}
-            <div className="space-y-6 rounded-xl border border-slate-800 bg-slate-950 p-6 text-slate-200">
+            <div className="space-y-6 rounded-xl border border-zinc-800 bg-zinc-950 p-6 text-zinc-200">
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold text-white">Intégration</h3>
                 </div>
@@ -173,7 +173,7 @@ export default function SettingsPage() {
                         Webhook URL (pour vos campagnes Facebook/Google Ads)
                     </label>
                     <div className="flex items-center gap-2">
-                        <code className="flex-1 rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-zinc-400 font-mono">
+                        <code className="flex-1 rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-400 font-mono">
                             {typeof window !== 'undefined' ? `${window.location.origin}/api/incoming-lead` : '/api/incoming-lead'}
                         </code>
                         <button
@@ -183,12 +183,12 @@ export default function SettingsPage() {
                                 setMessage("✅ URL copiée !");
                                 setTimeout(() => setMessage(""), 3000);
                             }}
-                            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-slate-800 text-white hover:bg-slate-700 h-10 px-4 py-2"
+                            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-zinc-800 text-white hover:bg-zinc-700 hover:text-orange-500 h-10 px-4 py-2"
                         >
                             Copier
                         </button>
                     </div>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-zinc-500">
                         Configurez votre source de leads (ex: Zapier, Make) pour envoyer une requête POST à cette URL avec les champs <code>name</code> et <code>phone</code>.
                     </p>
                 </div>

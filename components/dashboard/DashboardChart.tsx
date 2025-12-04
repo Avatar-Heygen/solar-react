@@ -27,8 +27,8 @@ export default function DashboardChart() {
                 >
                     <defs>
                         <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                            <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
@@ -48,12 +48,12 @@ export default function DashboardChart() {
                     />
                     <Tooltip
                         contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', color: '#f4f4f5' }}
-                        itemStyle={{ color: '#3b82f6' }}
+                        itemStyle={{ color: '#f97316' }}
                     />
                     <Area
                         type="monotone"
                         dataKey="leads"
-                        stroke="#3b82f6"
+                        stroke="#f97316"
                         strokeWidth={2}
                         fillOpacity={1}
                         fill="url(#colorLeads)"
